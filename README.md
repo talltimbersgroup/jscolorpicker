@@ -3,6 +3,7 @@
 An open source, free (as in beer), versatile, flexible and lightweight Javascript Color Picker Component supporting light and dark skins, swatches, multiple color formats, CSS color parsing, instant and confirm modes and much more.
 
 ## Please visit [jscolorpicker.com](https://www.jscolorpicker.com/) for more detailed documentation and extensive demo's.<br><br>
+## This is a fork created to try to add gradient support
 
 ## Table of Contents
 
