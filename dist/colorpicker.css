@@ -405,3 +405,134 @@
      to color buttons to picked color
   */
 }
+
+/* Gradient tabs */
+.cp_tabs {
+  display: flex;
+  border-bottom: 1px solid var(--cp-border-color);
+}
+
+.cp_tab {
+  flex: 1;
+  padding: 0.5rem;
+  border: none;
+  background: none;
+  color: var(--cp-body-color);
+  cursor: pointer;
+  transition: background-color 100ms ease-out;
+}
+
+.cp_tab:hover {
+  background-color: var(--cp-border-color-translucent);
+}
+
+.cp_tab.active {
+  background-color: var(--cp-border-color);
+  color: var(--cp-body-color);
+}
+
+/* Gradient panels */
+.cp_panel {
+  display: none;
+}
+
+.cp_panel.active {
+  display: block;
+}
+
+/* Gradient controls */
+.cp_gradient-preview {
+  height: 3rem;
+  border: 1px solid var(--cp-border-color);
+  border-radius: var(--cp-border-radius-sm);
+  margin-bottom: 0.75rem;
+  background: linear-gradient(0deg, #ff0000, #0000ff);
+}
+
+.cp_gradient-colors {
+  margin-bottom: 0.75rem;
+}
+
+.cp_gradient-color-selector {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.cp_gradient-color-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cp_gradient-color-preview {
+  width: 3rem;
+  height: 3rem;
+  border: 2px solid var(--cp-border-color);
+  border-radius: var(--cp-border-radius-sm);
+  cursor: pointer;
+  transition: all 150ms ease-out;
+  background: linear-gradient(#ff0000, #ff0000), var(--cp-bg-checker);
+  position: relative;
+}
+
+.cp_gradient-color-preview:hover {
+  border-color: var(--cp-hover-color);
+}
+
+.cp_gradient-color-preview.active {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.cp_gradient-color-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--cp-body-color);
+  text-align: center;
+}
+
+.cp_gradient-angle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.cp_gradient-angle label {
+  font-weight: 500;
+  color: var(--cp-body-color);
+}
+
+.cp_angle-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.cp_slider-angle {
+  flex: 1;
+  height: 1.5rem;
+  background: var(--cp-border-color);
+  border: 1px solid var(--cp-border-color);
+  border-radius: var(--cp-border-radius-sm);
+  position: relative;
+  cursor: pointer;
+}
+
+.cp_angle-input {
+  width: 4rem;
+  padding: 0.25rem;
+  border: 1px solid var(--cp-border-color);
+  border-radius: var(--cp-border-radius-sm);
+  background: var(--cp-body-bg);
+  color: var(--cp-body-color);
+  text-align: center;
+}
+
+.cp_angle-input:focus {
+  outline: none;
+  border-color: var(--cp-hover-color);
+}

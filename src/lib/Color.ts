@@ -3,6 +3,20 @@ import { convertColor } from './colorConvert'
 
 export type ColorFormat = 'hex' | 'rgb' | 'rgba' | 'hsv' | 'hsl'
 
+export interface GradientData {
+  type: 'gradient'
+  startColor: Color
+  endColor: Color
+  angle: number
+}
+
+export interface SolidData {
+  type: 'solid'
+  color: Color
+}
+
+export type ColorData = SolidData | GradientData
+
 export class Color {
   private readonly color: number[]
 

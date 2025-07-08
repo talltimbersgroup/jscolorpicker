@@ -62,6 +62,12 @@ declare class ColorPicker extends EventEmitter<{
     private _color;
     private _newColor;
     private _swatches;
+    private _gradientMode;
+    private _hasGradient;
+    private _gradientStartColor;
+    private _gradientEndColor;
+    private _gradientAngle;
+    private _activeGradientColor;
     private config;
     private popper?;
     private isInput;
@@ -74,8 +80,17 @@ declare class ColorPicker extends EventEmitter<{
     private hsvSlider?;
     private hueSlider?;
     private alphaSlider?;
+    private angleSlider?;
+    private gradientHsvSlider?;
+    private gradientHueSlider?;
+    private gradientAlphaSlider?;
     private $formats?;
     private $colorInput?;
+    private $tabs?;
+    private $panels?;
+    private $gradientColorButtons?;
+    private $angleInput?;
+    private $gradientPreview?;
     private createToggle;
     /**
      * Append the picker to a given element.
@@ -106,6 +121,11 @@ declare class ColorPicker extends EventEmitter<{
     prompt(destroy?: boolean): Promise<Color | null>;
     private populateDialog;
     private bindDialog;
+    private switchTab;
+    private bindGradientControls;
+    private updateGradientColorSelection;
+    private updateGradientAngle;
+    private updateGradientPreview;
     private getAnimationDuration;
     /**
      * Close the picker dialog.
@@ -248,6 +268,12 @@ declare interface PickerConfig {
      * Default: 8
      */
     staticOffset: number;
+    /**
+     * Whether to enable gradient selection mode alongside solid color selection.
+     * When enabled, users can choose between solid colors and linear gradients.
+     * Default: false
+     */
+    allowGradientSelection: boolean;
 }
 
 declare type StaticPlacement = 'center' | 'top left' | 'top center' | 'top right' | 'center left' | 'center center' | 'center right' | 'bottom left' | 'bottom center' | 'bottom right';

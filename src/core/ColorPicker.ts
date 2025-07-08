@@ -12,7 +12,7 @@ import dialogContent from '../html/dialog.html?raw'
 import caretContent from '../html/caret.html?raw'
 
 import type { PickerConfig } from './config'
-import type { ColorFormat } from '../lib/Color'
+import type { ColorFormat, GradientData } from '../lib/Color'
 import type { Instance as PopperInstance } from '@popperjs/core'
 
 let currentlyOpen: ColorPicker | undefined
@@ -72,6 +72,13 @@ export class ColorPicker extends EventEmitter<{
   private _newColor: Color
   private _swatches: string[]
 
+  private _gradientMode = false
+  private _hasGradient = false  // Track if this picker has a gradient set
+  private _gradientStartColor: Color
+  private _gradientEndColor: Color
+  private _gradientAngle = 0
+  private _activeGradientColor: 'start' | 'end' = 'start'
+
   private config: PickerConfig
   private popper?: PopperInstance
 
@@ -88,9 +95,19 @@ export class ColorPicker extends EventEmitter<{
   private hsvSlider?: Slider
   private hueSlider?: Slider
   private alphaSlider?: Slider
+  private angleSlider?: Slider
+  
+  private gradientHsvSlider?: Slider
+  private gradientHueSlider?: Slider
+  private gradientAlphaSlider?: Slider
 
   private $formats?: HTMLElement[]
   private $colorInput?: HTMLInputElement
+  private $tabs?: HTMLElement[]
+  private $panels?: HTMLElement[]
+  private $gradientColorButtons?: HTMLElement[]
+  private $angleInput?: HTMLInputElement
+  private $gradientPreview?: HTMLElement
 
   private createToggle($from: HTMLInputElement | HTMLButtonElement) {
     const isInput = $from instanceof HTMLInputElement
@@ -166,6 +183,9 @@ export class ColorPicker extends EventEmitter<{
 
     this._setCurrentColor(new Color(color), false)
     if (!color) this.clear(false)
+
+    this._gradientStartColor = new Color(color || '#ff0000')
+    this._gradientEndColor = new Color('#0000ff')
 
     this.setSwatches(this.config.swatches)
 
@@ -281,6 +301,27 @@ export class ColorPicker extends EventEmitter<{
   }
 
   private populateDialog() {
+    // Handle tabs for gradient mode
+    if (this.config.allowGradientSelection) {
+      this.$tabs = Array.from(this.$dialog!.querySelectorAll('.cp_tab'))
+      this.$panels = Array.from(this.$dialog!.querySelectorAll('.cp_panel'))
+      
+      this.$tabs.forEach(($tab) => {
+        $tab.addEventListener('click', () => this.switchTab($tab.dataset.tab as 'solid' | 'gradient'))
+      })
+      
+      // Switch to gradient mode if this picker has a gradient, otherwise solid
+      this.switchTab(this._hasGradient ? 'gradient' : 'solid')
+    } else {
+      this.$dialog!.querySelector('.cp_tabs')?.remove()
+      this.$dialog!.querySelector('.cp_panel-gradient')?.remove()
+      // Make sure solid panel is visible when gradient is disabled
+      const solidPanel = this.$dialog!.querySelector('.cp_panel-solid') as HTMLElement
+      if (solidPanel) {
+        solidPanel.classList.add('active')
+      }
+    }
+
     // Create formats based on config and assign event listener
     if (this.config.formats) {
       this.$formats = this.config.formats.map((format) => {
@@ -292,67 +333,89 @@ export class ColorPicker extends EventEmitter<{
         $format.addEventListener('click', () => this.setFormat(format))
         return $format
       })
-      this.$dialog!.querySelector('.cp_formats')!.append(...this.$formats)
+      this.$dialog!.querySelectorAll('.cp_formats').forEach(($formatsContainer) => {
+        $formatsContainer.append(...this.$formats!.map($f => $f.cloneNode(true)))
+      })
     }
   }
 
   private bindDialog() {
-    // Binding to these tracks is very simple :)
-    const $hsvTrack = this.$dialog!.querySelector('.cp_area-hsv')
-    this.hsvSlider = new Slider($hsvTrack as HTMLElement)
-    this.hsvSlider.on('drag', (x, y) => {
-      this._setNewColor(this._newColor.saturation(x).value(1 - y))
-    })
+    // Bind solid panel sliders
+    const $solidPanel = this.$dialog!.querySelector('.cp_panel-solid')
+    if ($solidPanel) {
+      const $hsvTrack = $solidPanel.querySelector('.cp_area-hsv')
+      if ($hsvTrack) {
+        this.hsvSlider = new Slider($hsvTrack as HTMLElement)
+        this.hsvSlider.on('drag', (x, y) => {
+          this._setNewColor(this._newColor.saturation(x).value(1 - y))
+        })
+      }
 
-    const $hueTrack = this.$dialog!.querySelector('.cp_slider-hue')
-    this.hueSlider = new Slider($hueTrack as HTMLElement)
-    this.hueSlider.on('drag', (x) => {
-      this._setNewColor(this._newColor.hue(x * 360))
-    })
+      const $hueTrack = $solidPanel.querySelector('.cp_slider-hue')
+      if ($hueTrack) {
+        this.hueSlider = new Slider($hueTrack as HTMLElement)
+        this.hueSlider.on('drag', (x) => {
+          this._setNewColor(this._newColor.hue(x * 360))
+        })
+      }
 
-    const $alphaTrack = this.$dialog!.querySelector('.cp_slider-alpha') as HTMLElement
-    if (this.config.enableAlpha) {
-      this.alphaSlider = new Slider($alphaTrack as HTMLElement)
-      this.alphaSlider.on('drag', (x) => {
-        this._setNewColor(this._newColor.alpha(x), true)
-      })
-    } else {
-      $alphaTrack.remove()
+      const $alphaTrack = $solidPanel.querySelector('.cp_slider-alpha')
+      if ($alphaTrack) {
+        if (this.config.enableAlpha) {
+          this.alphaSlider = new Slider($alphaTrack as HTMLElement)
+          this.alphaSlider.on('drag', (x) => {
+            this._setNewColor(this._newColor.alpha(x), true)
+          })
+        } else {
+          ($alphaTrack as HTMLElement).remove()
+        }
+      }
+    }
+
+    // Bind gradient controls
+    if (this.config.allowGradientSelection) {
+      this.bindGradientControls()
     }
 
     // When clicking the eyedropper, the EyeDropper WebAPI will be invoked
-    const $eyedrop = this.$dialog!.querySelector('.cp_eyedrop') as HTMLButtonElement
+    const $eyedrops = this.$dialog!.querySelectorAll('.cp_eyedrop')
     if (this.config.enableEyedropper && 'EyeDropper' in window) {
-      $eyedrop.addEventListener('click', () => {
-        new EyeDropper()
-          .open()
-          .then((result) => {
-            const color = new Color(result.sRGBHex)
-            this._setNewColor(color)
-          })
-          .catch(() => {})
+      $eyedrops.forEach(($eyedrop) => {
+        $eyedrop.addEventListener('click', () => {
+          new EyeDropper()
+            .open()
+            .then((result) => {
+              const color = new Color(result.sRGBHex)
+              this._setNewColor(color)
+            })
+            .catch(() => {})
+        })
       })
     } else {
-      $eyedrop.remove()
+      $eyedrops.forEach(($eyedrop) => $eyedrop.remove())
     }
 
     // When clicking submit, dismiss dialog
-    const $submit = this.$dialog!.querySelector('.cp_submit') as HTMLButtonElement
+    const $submits = this.$dialog!.querySelectorAll('.cp_submit')
     if ('confirm' === this.config.submitMode) {
-      $submit.addEventListener('click', () => this.submit())
+      $submits.forEach(($submit) => {
+        $submit.addEventListener('click', () => this.submit())
+      })
     } else {
-      $submit.remove()
+      $submits.forEach(($submit) => $submit.remove())
     }
 
     // When clicking clear, set color to null
-    const $clear = this.$dialog!.querySelector('.cp_clear') as HTMLButtonElement
+    const $clears = this.$dialog!.querySelectorAll('.cp_clear')
     if (this.config.showClearButton) {
-      $clear.addEventListener('click', () => {
-        this.clear()
-        this.close()
+      $clears.forEach(($clear) => {
+        $clear.addEventListener('click', () => {
+          this.clear()
+          this.close()
+        })
       })
     } else {
-      $clear.remove()
+      $clears.forEach(($clear) => $clear.remove())
     }
 
     // When changing the input value, update color
@@ -383,10 +446,128 @@ export class ColorPicker extends EventEmitter<{
       const $formats = this.$dialog!.querySelector('.cp_formats')
       $formats && $formats.remove()
 
-      $hueTrack && $hueTrack.remove()
-      $hsvTrack && $hsvTrack.remove()
-      $alphaTrack && $alphaTrack.remove()
+      // Remove elements in swatches-only mode
+      this.$dialog!.querySelectorAll('.cp_slider-hue').forEach(el => el.remove())
+      this.$dialog!.querySelectorAll('.cp_area-hsv').forEach(el => el.remove())
+      this.$dialog!.querySelectorAll('.cp_slider-alpha').forEach(el => el.remove())
     }
+  }
+
+  private switchTab(tab: 'solid' | 'gradient') {
+    this._gradientMode = tab === 'gradient'
+    
+    this.$tabs?.forEach(($tab) => {
+      $tab.classList.toggle('active', $tab.dataset.tab === tab)
+    })
+    
+    this.$panels?.forEach(($panel) => {
+      $panel.classList.toggle('active', $panel.dataset.panel === tab)
+    })
+
+    if (this._gradientMode) {
+      this._setNewColor(this._activeGradientColor === 'start' ? this._gradientStartColor : this._gradientEndColor)
+    } else {
+      this._setNewColor(this._color)
+    }
+  }
+
+  private bindGradientControls() {
+    this.$gradientColorButtons = Array.from(this.$dialog!.querySelectorAll('.cp_gradient-color-preview'))
+    this.$angleInput = this.$dialog!.querySelector('.cp_angle-input') as HTMLInputElement
+    this.$gradientPreview = this.$dialog!.querySelector('.cp_gradient-preview') as HTMLElement
+
+    // Bind gradient panel sliders
+    const $gradientPanel = this.$dialog!.querySelector('.cp_panel-gradient')
+    if ($gradientPanel) {
+      const $hsvTrack = $gradientPanel.querySelector('.cp_area-hsv')
+      if ($hsvTrack) {
+        this.gradientHsvSlider = new Slider($hsvTrack as HTMLElement)
+        this.gradientHsvSlider.on('drag', (x, y) => {
+          this._setNewColor(this._newColor.saturation(x).value(1 - y))
+        })
+      }
+
+      const $hueTrack = $gradientPanel.querySelector('.cp_slider-hue')
+      if ($hueTrack) {
+        this.gradientHueSlider = new Slider($hueTrack as HTMLElement)
+        this.gradientHueSlider.on('drag', (x) => {
+          this._setNewColor(this._newColor.hue(x * 360))
+        })
+      }
+
+      const $alphaTrack = $gradientPanel.querySelector('.cp_slider-alpha')
+      if ($alphaTrack) {
+        if (this.config.enableAlpha) {
+          this.gradientAlphaSlider = new Slider($alphaTrack as HTMLElement)
+          this.gradientAlphaSlider.on('drag', (x) => {
+            this._setNewColor(this._newColor.alpha(x), true)
+          })
+        } else {
+          ($alphaTrack as HTMLElement).remove()
+        }
+      }
+
+      const $angleTrack = $gradientPanel.querySelector('.cp_slider-angle')
+      if ($angleTrack) {
+        this.angleSlider = new Slider($angleTrack as HTMLElement)
+        this.angleSlider.on('drag', (x) => {
+          this._gradientAngle = x * 360
+          this.updateGradientAngle()
+        })
+      }
+    }
+
+    this.$gradientColorButtons.forEach(($button) => {
+      $button.addEventListener('click', () => {
+        this._activeGradientColor = $button.dataset.color as 'start' | 'end'
+        this.updateGradientColorSelection()
+        this._setNewColor(this._activeGradientColor === 'start' ? this._gradientStartColor : this._gradientEndColor)
+      })
+    })
+
+    this.$angleInput?.addEventListener('input', () => {
+      const value = parseInt(this.$angleInput!.value)
+      if (!isNaN(value) && value >= 0 && value <= 360) {
+        this._gradientAngle = value
+        this.angleSlider?.move(value / 360)
+        this.updateGradientPreview()
+      }
+    })
+
+    this.updateGradientColorSelection()
+    this.updateGradientAngle()
+    this.updateGradientPreview()
+  }
+
+  private updateGradientColorSelection() {
+    this.$gradientColorButtons?.forEach(($button) => {
+      $button.classList.toggle('active', $button.dataset.color === this._activeGradientColor)
+    })
+  }
+
+  private updateGradientAngle() {
+    if (this.$angleInput) {
+      this.$angleInput.value = this._gradientAngle.toString()
+    }
+    if (this.angleSlider) {
+      this.angleSlider.move(this._gradientAngle / 360)
+    }
+    this.updateGradientPreview()
+  }
+
+  private updateGradientPreview() {
+    if (this.$gradientPreview) {
+      const startColor = this._gradientStartColor.string('hex')
+      const endColor = this._gradientEndColor.string('hex')
+      this.$gradientPreview.style.background = `linear-gradient(${this._gradientAngle}deg, ${startColor}, ${endColor})`
+    }
+    
+    // Update the color preview divs
+    this.$gradientColorButtons?.forEach(($button) => {
+      const colorType = $button.dataset.color as 'start' | 'end'
+      const color = colorType === 'start' ? this._gradientStartColor : this._gradientEndColor
+      $button.style.background = `linear-gradient(${color.string('hex')}, ${color.string('hex')}), var(--cp-bg-checker)`
+    })
   }
 
   private getAnimationDuration() {
@@ -430,7 +611,43 @@ export class ColorPicker extends EventEmitter<{
    * @param emit Emit event?
    */
   submit(color = this._newColor, emit = true) {
-    this._setCurrentColor(color, emit, true)
+    if (this._gradientMode) {
+      const gradientData: GradientData = {
+        type: 'gradient',
+        startColor: this._gradientStartColor,
+        endColor: this._gradientEndColor,
+        angle: this._gradientAngle
+      }
+      this._unset = false
+      this._hasGradient = true  // Mark that this picker now has a gradient
+      
+      // Set gradient background immediately and persistently
+      const gradientCSS = `linear-gradient(${this._gradientAngle}deg, ${this._gradientStartColor.string('hex')}, ${this._gradientEndColor.string('hex')})`
+      const gradientString = `gradient(${this._gradientAngle}deg, ${this._gradientStartColor.string(this.config.defaultFormat)}, ${this._gradientEndColor.string(this.config.defaultFormat)})`
+
+      if (this.$input) {
+        this.$input.value = gradientString
+        this.$input.dataset.color = gradientCSS
+      }
+      if (this.$toggle) this.$toggle.dataset.color = gradientCSS
+      if (this.$button) {
+        this.$button.classList.remove('cp_unset')
+        // Force the gradient background to persist
+        this.$button.style.background = `${gradientCSS}, var(--cp-bg-checker)`
+      }
+      
+      if (emit) {
+        this.emit('pick', gradientData as any)
+        if (this.$input) {
+          this._firingChange = true
+          this.$input.dispatchEvent(new Event('change'))
+          this._firingChange = false
+        }
+      }
+    } else {
+      this._hasGradient = false  // Submitting solid color clears gradient state
+      this._setCurrentColor(color, emit, true)
+    }
     this.close(emit)
   }
 
@@ -472,6 +689,7 @@ export class ColorPicker extends EventEmitter<{
    */
   clear(emit = true) {
     this._unset = true
+    this._hasGradient = false  // Clear gradient state when clearing color
     this.updateAppliedColor(emit)
   }
 
@@ -482,6 +700,7 @@ export class ColorPicker extends EventEmitter<{
    */
   setColor(color: Color | number[] | string | null, emit = true) {
     if (!color) return this.clear(emit)
+    this._hasGradient = false  // Setting a solid color clears gradient state
     this._setCurrentColor(new Color(color), emit)
   }
 
@@ -502,10 +721,21 @@ export class ColorPicker extends EventEmitter<{
   private _setNewColor(color: Color, updateInput = true) {
     this._newColor = color
 
+    if (this._gradientMode) {
+      if (this._activeGradientColor === 'start') {
+        this._gradientStartColor = color
+      } else {
+        this._gradientEndColor = color
+      }
+      this.updateGradientPreview()
+    }
+
     if (this.config.submitMode === 'instant' || this.config.swatchesOnly) {
       this._unset = false
-      this._color = color
-      this.updateAppliedColor(true)
+      if (!this._gradientMode) {
+        this._color = color
+        this.updateAppliedColor(true)
+      }
     }
 
     this.updateColor(updateInput)
@@ -524,7 +754,9 @@ export class ColorPicker extends EventEmitter<{
     const newColorHex = this._newColor.string('hex')
 
     this.$dialog?.style.setProperty('--cp-base-color', newColorHex.substring(0, 7))
+    
     this.$button?.style.setProperty('--cp-current-color', currentColor)
+    
     this.$dialog?.style.setProperty('--cp-current-color', currentColor)
     this.$dialog?.style.setProperty('--cp-color', newColorHex)
     this.$dialog?.style.setProperty('--cp-hue', this._newColor.hue().toString())
@@ -533,6 +765,13 @@ export class ColorPicker extends EventEmitter<{
     this.hsvSlider?.move(this._newColor.saturation(), 1 - this._newColor.value())
     this.hueSlider?.move(this._newColor.hue() / 360)
     this.alphaSlider?.move(this._newColor.alpha())
+
+    // Also update gradient panel sliders when in gradient mode
+    if (this._gradientMode) {
+      this.gradientHsvSlider?.move(this._newColor.saturation(), 1 - this._newColor.value())
+      this.gradientHueSlider?.move(this._newColor.hue() / 360)
+      this.gradientAlphaSlider?.move(this._newColor.alpha())
+    }
 
     if (updateInput && this.$colorInput) {
       this.$colorInput.value = this._newColor.string(this._format)

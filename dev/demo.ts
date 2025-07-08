@@ -63,6 +63,14 @@ pickers.push(
     defaultFormat: 'hex', // 'hex' | 'rgb' | 'hsv' | 'hsl'
     swatches: ['#d95d5d', '#db8525', '#e8c43c', '#bed649', '#9ecbdb', '#6399a5', '#c771a1'],
     swatchesOnly: true,
+  }),
+
+  new ColorPicker('#picker6', {
+    allowGradientSelection: true,
+    submitMode: 'confirm', // 'instant' | 'confirm'
+    color: 'red',
+    defaultFormat: 'hex', // 'hex' | 'rgb' | 'hsv' | 'hsl'
+    swatches: ['#d95d5d', '#db8525', '#e8c43c', '#bed649', '#9ecbdb', '#6399a5', '#c771a1'],
   })
 )
 
@@ -75,7 +83,13 @@ for (let picker of pickers) {
   picker.on('opened', () => console.log('opened'))
   picker.on('close', () => console.log('close'))
   picker.on('closed', () => console.log('closed'))
-  picker.on('pick', (color) => console.log(`pick ${color}`))
+  picker.on('pick', (color) => {
+    console.log(`pick`, color)
+    // Handle gradient data specially
+    if (color && typeof color === 'object' && 'type' in color && color.type === 'gradient') {
+      console.log(`Gradient: ${color.angle}° from ${color.startColor.string('hex')} to ${color.endColor.string('hex')}`)
+    }
+  })
 }
 
 document.getElementById('promptBtn')!.onclick = async (e) => {
@@ -120,7 +134,13 @@ for (const btn of document.querySelectorAll<HTMLElement>('.setBtn')) {
 for (const btn of document.querySelectorAll<HTMLElement>('.getBtn')) {
   btn.onclick = () => {
     const idx = +btn.dataset.picker!
-    console.log(pickers[idx - 1].color?.string('rgba'))
+    const picker = pickers[idx - 1]
+    console.log(picker.color?.string('rgba'))
+    
+    // For gradient picker, also show the last picked value
+    if (idx === 6) {
+      console.log('Last picked value:', picker.color)
+    }
   }
 }
 

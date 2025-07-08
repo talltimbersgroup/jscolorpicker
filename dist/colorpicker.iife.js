@@ -1908,7 +1908,8 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     dialogPlacement: "top",
     dialogOffset: 8,
     staticPlacement: "center",
-    staticOffset: 8
+    staticOffset: 8,
+    allowGradientSelection: false
   };
   const getElement = (from) => {
     if (!from) return null;
@@ -1927,7 +1928,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     element.style.position = "fixed";
     element.style.transform = `translate(${centerX ? "-50%" : "0%"}, ${centerY ? "-50%" : "0%"})`;
   };
-  const dialogContent = '<div class="cp_dialog"><div class="cp_area cp_area-hsv"><div class="cp_thumb" tabindex="0"></div></div><div class="cp_dialog-inner"><div class="cp_slider-hue cp_slider"><div class="cp_thumb" tabindex="0"></div></div><div class="cp_slider cp_slider-alpha"><div class="cp_thumb" tabindex="0"></div></div><div class="cp_swatches"></div><div class="cp_formats"></div><div class="cp_input-group"><div class="cp_sample"></div><input class="cp_value" value="#ff0000" autocomplete="false" spellcheck="false" /><button type="button" class="cp_action cp_eyedrop"><svg class="cp_icon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><g fill="currentColor"><path d="m207.8 87.6l-25.37 25.53l4.89 4.88a16 16 0 0 1 0 22.64l-9 9a8 8 0 0 1-11.32 0l-60.68-60.7a8 8 0 0 1 0-11.32l9-9a16 16 0 0 1 22.63 0l4.88 4.89l25-25.11c10.79-10.79 28.37-11.45 39.45-1a28 28 0 0 1 .52 40.19" opacity="0.2"/><path d="M224 67.3a35.8 35.8 0 0 0-11.26-25.66c-14-13.28-36.72-12.78-50.62 1.13L142.8 62.2a24 24 0 0 0-33.14.77l-9 9a16 16 0 0 0 0 22.64l2 2.06l-51 51a39.75 39.75 0 0 0-10.53 38l-8 18.41A13.68 13.68 0 0 0 36 219.3a15.92 15.92 0 0 0 17.71 3.35L71.23 215a39.89 39.89 0 0 0 37.06-10.75l51-51l2.06 2.06a16 16 0 0 0 22.62 0l9-9a24 24 0 0 0 .74-33.18l19.75-19.87A35.75 35.75 0 0 0 224 67.3M97 193a24 24 0 0 1-24 6a8 8 0 0 0-5.55.31l-18.1 7.91L57 189.41a8 8 0 0 0 .25-5.75A23.88 23.88 0 0 1 63 159l51-51l33.94 34ZM202.13 82l-25.37 25.52a8 8 0 0 0 0 11.3l4.89 4.89a8 8 0 0 1 0 11.32l-9 9L112 83.26l9-9a8 8 0 0 1 11.31 0l4.89 4.89a8 8 0 0 0 5.65 2.34a8 8 0 0 0 5.66-2.36l24.94-25.09c7.81-7.82 20.5-8.18 28.29-.81a20 20 0 0 1 .39 28.7Z"/></g></svg></button><button type="button" class="cp_action cp_clear"><svg class="cp_icon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><g fill="currentColor"><path d="M224 56v144a8 8 0 0 1-8 8H68.53a8 8 0 0 1-6.86-3.88L16 128l45.67-76.12A8 8 0 0 1 68.53 48H216a8 8 0 0 1 8 8" opacity="0.2"/><path d="M216 40H68.53a16.08 16.08 0 0 0-13.72 7.77L9.14 123.88a8 8 0 0 0 0 8.24l45.67 76.11A16.08 16.08 0 0 0 68.53 216H216a16 16 0 0 0 16-16V56a16 16 0 0 0-16-16M61.67 204.12l6.86-4.12ZM216 200H68.53l-43.2-72l43.2-72H216Zm-109.66-53.66L124.69 128l-18.35-18.34a8 8 0 0 1 11.32-11.32L136 116.69l18.34-18.35a8 8 0 0 1 11.32 11.32L147.31 128l18.35 18.34a8 8 0 0 1-11.32 11.32L136 139.31l-18.34 18.35a8 8 0 0 1-11.32-11.32"/></g></svg></button><button type="button" class="cp_action cp_submit"><svg class="cp_icon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><g fill="currentColor"><path d="m237.66 85.26l-128.4 128.4a8 8 0 0 1-11.32 0l-71.6-72a8 8 0 0 1 0-11.31l24-24a8 8 0 0 1 11.32 0L104 147.43l98.34-97.09a8 8 0 0 1 11.32 0l24 23.6a8 8 0 0 1 0 11.32" opacity="0.2"/><path d="m243.28 68.24l-24-23.56a16 16 0 0 0-22.59 0L104 136.23l-36.69-35.6a16 16 0 0 0-22.58.05l-24 24a16 16 0 0 0 0 22.61l71.62 72a16 16 0 0 0 22.63 0L243.33 90.91a16 16 0 0 0-.05-22.67M103.62 208L32 136l24-24a.6.6 0 0 1 .08.08l42.35 41.09a8 8 0 0 0 11.19 0L208.06 56L232 79.6Z"/></g></svg></button></div></div></div>';
+  const dialogContent = '<div class="cp_dialog"><div class="cp_tabs"><button class="cp_tab cp_tab-solid" data-tab="solid">Solid Color</button><button class="cp_tab cp_tab-gradient" data-tab="gradient">Gradient</button></div><div class="cp_panel cp_panel-solid" data-panel="solid"><div class="cp_area cp_area-hsv"><div class="cp_thumb" tabindex="0"></div></div><div class="cp_dialog-inner"><div class="cp_slider-hue cp_slider"><div class="cp_thumb" tabindex="0"></div></div><div class="cp_slider cp_slider-alpha"><div class="cp_thumb" tabindex="0"></div></div><div class="cp_swatches"></div><div class="cp_formats"></div><div class="cp_input-group"><div class="cp_sample"></div><input class="cp_value" value="#ff0000" autocomplete="false" spellcheck="false" /><button type="button" class="cp_action cp_eyedrop"><svg class="cp_icon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><g fill="currentColor"><path d="m207.8 87.6l-25.37 25.53l4.89 4.88a16 16 0 0 1 0 22.64l-9 9a8 8 0 0 1-11.32 0l-60.68-60.7a8 8 0 0 1 0-11.32l9-9a16 16 0 0 1 22.63 0l4.88 4.89l25-25.11c10.79-10.79 28.37-11.45 39.45-1a28 28 0 0 1 .52 40.19" opacity="0.2"/><path d="M224 67.3a35.8 35.8 0 0 0-11.26-25.66c-14-13.28-36.72-12.78-50.62 1.13L142.8 62.2a24 24 0 0 0-33.14.77l-9 9a16 16 0 0 0 0 22.64l2 2.06l-51 51a39.75 39.75 0 0 0-10.53 38l-8 18.41A13.68 13.68 0 0 0 36 219.3a15.92 15.92 0 0 0 17.71 3.35L71.23 215a39.89 39.89 0 0 0 37.06-10.75l51-51l2.06 2.06a16 16 0 0 0 22.62 0l9-9a24 24 0 0 0 .74-33.18l19.75-19.87A35.75 35.75 0 0 0 224 67.3M97 193a24 24 0 0 1-24 6a8 8 0 0 0-5.55.31l-18.1 7.91L57 189.41a8 8 0 0 0 .25-5.75A23.88 23.88 0 0 1 63 159l51-51l33.94 34ZM202.13 82l-25.37 25.52a8 8 0 0 0 0 11.3l4.89 4.89a8 8 0 0 1 0 11.32l-9 9L112 83.26l9-9a8 8 0 0 1 11.31 0l4.89 4.89a8 8 0 0 0 5.65 2.34a8 8 0 0 0 5.66-2.36l24.94-25.09c7.81-7.82 20.5-8.18 28.29-.81a20 20 0 0 1 .39 28.7Z"/></g></svg></button><button type="button" class="cp_action cp_clear"><svg class="cp_icon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><g fill="currentColor"><path d="M224 56v144a8 8 0 0 1-8 8H68.53a8 8 0 0 1-6.86-3.88L16 128l45.67-76.12A8 8 0 0 1 68.53 48H216a8 8 0 0 1 8 8" opacity="0.2"/><path d="M216 40H68.53a16.08 16.08 0 0 0-13.72 7.77L9.14 123.88a8 8 0 0 0 0 8.24l45.67 76.11A16.08 16.08 0 0 0 68.53 216H216a16 16 0 0 0 16-16V56a16 16 0 0 0-16-16M61.67 204.12l6.86-4.12ZM216 200H68.53l-43.2-72l43.2-72H216Zm-109.66-53.66L124.69 128l-18.35-18.34a8 8 0 0 1 11.32-11.32L136 116.69l18.34-18.35a8 8 0 0 1 11.32 11.32L147.31 128l18.35 18.34a8 8 0 0 1-11.32 11.32L136 139.31l-18.34 18.35a8 8 0 0 1-11.32-11.32"/></g></svg></button><button type="button" class="cp_action cp_submit"><svg class="cp_icon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><g fill="currentColor"><path d="m237.66 85.26l-128.4 128.4a8 8 0 0 1-11.32 0l-71.6-72a8 8 0 0 1 0-11.31l24-24a8 8 0 0 1 11.32 0L104 147.43l98.34-97.09a8 8 0 0 1 11.32 0l24 23.6a8 8 0 0 1 0 11.32" opacity="0.2"/><path d="m243.28 68.24l-24-23.56a16 16 0 0 0-22.59 0L104 136.23l-36.69-35.6a16 16 0 0 0-22.58.05l-24 24a16 16 0 0 0 0 22.61l71.62 72a16 16 0 0 0 22.63 0L243.33 90.91a16 16 0 0 0-.05-22.67M103.62 208L32 136l24-24a.6.6 0 0 1 .08.08l42.35 41.09a8 8 0 0 0 11.19 0L208.06 56L232 79.6Z"/></g></svg></button></div></div></div><div class="cp_panel cp_panel-gradient" data-panel="gradient"><div class="cp_gradient-preview"></div><div class="cp_gradient-controls"><div class="cp_gradient-colors"><div class="cp_gradient-color-selector"><div class="cp_gradient-color-container"><div class="cp_gradient-color-preview cp_gradient-start active" data-color="start"></div><label class="cp_gradient-color-label">Start</label></div><div class="cp_gradient-color-container"><div class="cp_gradient-color-preview cp_gradient-end" data-color="end"></div><label class="cp_gradient-color-label">End</label></div></div></div><div class="cp_area cp_area-hsv"><div class="cp_thumb" tabindex="0"></div></div><div class="cp_dialog-inner"><div class="cp_slider-hue cp_slider"><div class="cp_thumb" tabindex="0"></div></div><div class="cp_slider cp_slider-alpha"><div class="cp_thumb" tabindex="0"></div></div><div class="cp_gradient-angle"><label>Angle:</label><div class="cp_angle-controls"><div class="cp_slider cp_slider-angle"><div class="cp_thumb" tabindex="0"></div></div><input type="number" class="cp_angle-input" min="0" max="360" value="0" /><span>°</span></div></div><div class="cp_swatches"></div><div class="cp_formats"></div><div class="cp_input-group"><div class="cp_sample"></div><input class="cp_value" value="#ff0000" autocomplete="false" spellcheck="false" /><button type="button" class="cp_action cp_eyedrop"><svg class="cp_icon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><g fill="currentColor"><path d="m207.8 87.6l-25.37 25.53l4.89 4.88a16 16 0 0 1 0 22.64l-9 9a8 8 0 0 1-11.32 0l-60.68-60.7a8 8 0 0 1 0-11.32l9-9a16 16 0 0 1 22.63 0l4.88 4.89l25-25.11c10.79-10.79 28.37-11.45 39.45-1a28 28 0 0 1 .52 40.19" opacity="0.2"/><path d="M224 67.3a35.8 35.8 0 0 0-11.26-25.66c-14-13.28-36.72-12.78-50.62 1.13L142.8 62.2a24 24 0 0 0-33.14.77l-9 9a16 16 0 0 0 0 22.64l2 2.06l-51 51a39.75 39.75 0 0 0-10.53 38l-8 18.41A13.68 13.68 0 0 0 36 219.3a15.92 15.92 0 0 0 17.71 3.35L71.23 215a39.89 39.89 0 0 0 37.06-10.75l51-51l2.06 2.06a16 16 0 0 0 22.62 0l9-9a24 24 0 0 0 .74-33.18l19.75-19.87A35.75 35.75 0 0 0 224 67.3M97 193a24 24 0 0 1-24 6a8 8 0 0 0-5.55.31l-18.1 7.91L57 189.41a8 8 0 0 0 .25-5.75A23.88 23.88 0 0 1 63 159l51-51l33.94 34ZM202.13 82l-25.37 25.52a8 8 0 0 0 0 11.3l4.89 4.89a8 8 0 0 1 0 11.32l-9 9L112 83.26l9-9a8 8 0 0 1 11.31 0l4.89 4.89a8 8 0 0 0 5.65 2.34a8 8 0 0 0 5.66-2.36l24.94-25.09c7.81-7.82 20.5-8.18 28.29-.81a20 20 0 0 1 .39 28.7Z"/></g></svg></button><button type="button" class="cp_action cp_clear"><svg class="cp_icon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><g fill="currentColor"><path d="M224 56v144a8 8 0 0 1-8 8H68.53a8 8 0 0 1-6.86-3.88L16 128l45.67-76.12A8 8 0 0 1 68.53 48H216a8 8 0 0 1 8 8" opacity="0.2"/><path d="M216 40H68.53a16.08 16.08 0 0 0-13.72 7.77L9.14 123.88a8 8 0 0 0 0 8.24l45.67 76.11A16.08 16.08 0 0 0 68.53 216H216a16 16 0 0 0 16-16V56a16 16 0 0 0-16-16M61.67 204.12l6.86-4.12ZM216 200H68.53l-43.2-72l43.2-72H216Zm-109.66-53.66L124.69 128l-18.35-18.34a8 8 0 0 1 11.32-11.32L136 116.69l18.34-18.35a8 8 0 0 1 11.32 11.32L147.31 128l18.35 18.34a8 8 0 0 1-11.32 11.32L136 139.31l-18.34 18.35a8 8 0 0 1-11.32-11.32"/></g></svg></button><button type="button" class="cp_action cp_submit"><svg class="cp_icon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><g fill="currentColor"><path d="m237.66 85.26l-128.4 128.4a8 8 0 0 1-11.32 0l-71.6-72a8 8 0 0 1 0-11.31l24-24a8 8 0 0 1 11.32 0L104 147.43l98.34-97.09a8 8 0 0 1 11.32 0l24 23.6a8 8 0 0 1 0 11.32" opacity="0.2"/><path d="m243.28 68.24l-24-23.56a16 16 0 0 0-22.59 0L104 136.23l-36.69-35.6a16 16 0 0 0-22.58.05l-24 24a16 16 0 0 0 0 22.61l71.62 72a16 16 0 0 0 22.63 0L243.33 90.91a16 16 0 0 0-.05-22.67M103.62 208L32 136l24-24a.6.6 0 0 1 .08.08l42.35 41.09a8 8 0 0 0 11.19 0L208.06 56L232 79.6Z"/></g></svg></button></div></div></div></div></div>';
   const caretContent = '<div class="cp_caret"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><path fill="currentColor" d="M208.49 120.49a12 12 0 0 1-17 0L140 69v147a12 12 0 0 1-24 0V69l-51.51 51.49a12 12 0 0 1-17-17l72-72a12 12 0 0 1 17 0l72 72a12 12 0 0 1 0 17"/></svg></div>';
   let currentlyOpen;
   class ColorPicker2 extends eventsExports.EventEmitter {
@@ -1945,6 +1946,13 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       __publicField(this, "_color");
       __publicField(this, "_newColor");
       __publicField(this, "_swatches");
+      __publicField(this, "_gradientMode", false);
+      __publicField(this, "_hasGradient", false);
+      // Track if this picker has a gradient set
+      __publicField(this, "_gradientStartColor");
+      __publicField(this, "_gradientEndColor");
+      __publicField(this, "_gradientAngle", 0);
+      __publicField(this, "_activeGradientColor", "start");
       __publicField(this, "config");
       __publicField(this, "popper");
       __publicField(this, "isInput");
@@ -1957,8 +1965,17 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       __publicField(this, "hsvSlider");
       __publicField(this, "hueSlider");
       __publicField(this, "alphaSlider");
+      __publicField(this, "angleSlider");
+      __publicField(this, "gradientHsvSlider");
+      __publicField(this, "gradientHueSlider");
+      __publicField(this, "gradientAlphaSlider");
       __publicField(this, "$formats");
       __publicField(this, "$colorInput");
+      __publicField(this, "$tabs");
+      __publicField(this, "$panels");
+      __publicField(this, "$gradientColorButtons");
+      __publicField(this, "$angleInput");
+      __publicField(this, "$gradientPreview");
       this.config = { ...defaultConfig, ...config };
       $from = getElement($from) ?? document.createElement("button");
       this.$toggle = $from;
@@ -1966,6 +1983,8 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       if (!this.config.headless) this.createToggle($from);
       this._setCurrentColor(new Color(color), false);
       if (!color) this.clear(false);
+      this._gradientStartColor = new Color(color || "#ff0000");
+      this._gradientEndColor = new Color("#0000ff");
       this.setSwatches(this.config.swatches);
       if (this.config.dismissOnOutsideClick) {
         window.addEventListener("pointerdown", (event) => {
@@ -2132,6 +2151,22 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       });
     }
     populateDialog() {
+      var _a, _b;
+      if (this.config.allowGradientSelection) {
+        this.$tabs = Array.from(this.$dialog.querySelectorAll(".cp_tab"));
+        this.$panels = Array.from(this.$dialog.querySelectorAll(".cp_panel"));
+        this.$tabs.forEach(($tab) => {
+          $tab.addEventListener("click", () => this.switchTab($tab.dataset.tab));
+        });
+        this.switchTab(this._hasGradient ? "gradient" : "solid");
+      } else {
+        (_a = this.$dialog.querySelector(".cp_tabs")) == null ? void 0 : _a.remove();
+        (_b = this.$dialog.querySelector(".cp_panel-gradient")) == null ? void 0 : _b.remove();
+        const solidPanel = this.$dialog.querySelector(".cp_panel-solid");
+        if (solidPanel) {
+          solidPanel.classList.add("active");
+        }
+      }
       if (this.config.formats) {
         this.$formats = this.config.formats.map((format) => {
           const $format = document.createElement("button");
@@ -2141,55 +2176,75 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
           $format.addEventListener("click", () => this.setFormat(format));
           return $format;
         });
-        this.$dialog.querySelector(".cp_formats").append(...this.$formats);
+        this.$dialog.querySelectorAll(".cp_formats").forEach(($formatsContainer) => {
+          $formatsContainer.append(...this.$formats.map(($f) => $f.cloneNode(true)));
+        });
       }
     }
     bindDialog() {
-      const $hsvTrack = this.$dialog.querySelector(".cp_area-hsv");
-      this.hsvSlider = new Slider($hsvTrack);
-      this.hsvSlider.on("drag", (x, y) => {
-        this._setNewColor(this._newColor.saturation(x).value(1 - y));
-      });
-      const $hueTrack = this.$dialog.querySelector(".cp_slider-hue");
-      this.hueSlider = new Slider($hueTrack);
-      this.hueSlider.on("drag", (x) => {
-        this._setNewColor(this._newColor.hue(x * 360));
-      });
-      const $alphaTrack = this.$dialog.querySelector(".cp_slider-alpha");
-      if (this.config.enableAlpha) {
-        this.alphaSlider = new Slider($alphaTrack);
-        this.alphaSlider.on("drag", (x) => {
-          this._setNewColor(this._newColor.alpha(x), true);
-        });
-      } else {
-        $alphaTrack.remove();
+      const $solidPanel = this.$dialog.querySelector(".cp_panel-solid");
+      if ($solidPanel) {
+        const $hsvTrack = $solidPanel.querySelector(".cp_area-hsv");
+        if ($hsvTrack) {
+          this.hsvSlider = new Slider($hsvTrack);
+          this.hsvSlider.on("drag", (x, y) => {
+            this._setNewColor(this._newColor.saturation(x).value(1 - y));
+          });
+        }
+        const $hueTrack = $solidPanel.querySelector(".cp_slider-hue");
+        if ($hueTrack) {
+          this.hueSlider = new Slider($hueTrack);
+          this.hueSlider.on("drag", (x) => {
+            this._setNewColor(this._newColor.hue(x * 360));
+          });
+        }
+        const $alphaTrack = $solidPanel.querySelector(".cp_slider-alpha");
+        if ($alphaTrack) {
+          if (this.config.enableAlpha) {
+            this.alphaSlider = new Slider($alphaTrack);
+            this.alphaSlider.on("drag", (x) => {
+              this._setNewColor(this._newColor.alpha(x), true);
+            });
+          } else {
+            $alphaTrack.remove();
+          }
+        }
       }
-      const $eyedrop = this.$dialog.querySelector(".cp_eyedrop");
+      if (this.config.allowGradientSelection) {
+        this.bindGradientControls();
+      }
+      const $eyedrops = this.$dialog.querySelectorAll(".cp_eyedrop");
       if (this.config.enableEyedropper && "EyeDropper" in window) {
-        $eyedrop.addEventListener("click", () => {
-          new EyeDropper().open().then((result) => {
-            const color = new Color(result.sRGBHex);
-            this._setNewColor(color);
-          }).catch(() => {
+        $eyedrops.forEach(($eyedrop) => {
+          $eyedrop.addEventListener("click", () => {
+            new EyeDropper().open().then((result) => {
+              const color = new Color(result.sRGBHex);
+              this._setNewColor(color);
+            }).catch(() => {
+            });
           });
         });
       } else {
-        $eyedrop.remove();
+        $eyedrops.forEach(($eyedrop) => $eyedrop.remove());
       }
-      const $submit = this.$dialog.querySelector(".cp_submit");
+      const $submits = this.$dialog.querySelectorAll(".cp_submit");
       if ("confirm" === this.config.submitMode) {
-        $submit.addEventListener("click", () => this.submit());
-      } else {
-        $submit.remove();
-      }
-      const $clear = this.$dialog.querySelector(".cp_clear");
-      if (this.config.showClearButton) {
-        $clear.addEventListener("click", () => {
-          this.clear();
-          this.close();
+        $submits.forEach(($submit) => {
+          $submit.addEventListener("click", () => this.submit());
         });
       } else {
-        $clear.remove();
+        $submits.forEach(($submit) => $submit.remove());
+      }
+      const $clears = this.$dialog.querySelectorAll(".cp_clear");
+      if (this.config.showClearButton) {
+        $clears.forEach(($clear) => {
+          $clear.addEventListener("click", () => {
+            this.clear();
+            this.close();
+          });
+        });
+      } else {
+        $clears.forEach(($clear) => $clear.remove());
       }
       this.$colorInput.addEventListener("input", () => {
         try {
@@ -2210,10 +2265,114 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         $iptGroup && $iptGroup.remove();
         const $formats = this.$dialog.querySelector(".cp_formats");
         $formats && $formats.remove();
-        $hueTrack && $hueTrack.remove();
-        $hsvTrack && $hsvTrack.remove();
-        $alphaTrack && $alphaTrack.remove();
+        this.$dialog.querySelectorAll(".cp_slider-hue").forEach((el) => el.remove());
+        this.$dialog.querySelectorAll(".cp_area-hsv").forEach((el) => el.remove());
+        this.$dialog.querySelectorAll(".cp_slider-alpha").forEach((el) => el.remove());
       }
+    }
+    switchTab(tab) {
+      var _a, _b;
+      this._gradientMode = tab === "gradient";
+      (_a = this.$tabs) == null ? void 0 : _a.forEach(($tab) => {
+        $tab.classList.toggle("active", $tab.dataset.tab === tab);
+      });
+      (_b = this.$panels) == null ? void 0 : _b.forEach(($panel) => {
+        $panel.classList.toggle("active", $panel.dataset.panel === tab);
+      });
+      if (this._gradientMode) {
+        this._setNewColor(this._activeGradientColor === "start" ? this._gradientStartColor : this._gradientEndColor);
+      } else {
+        this._setNewColor(this._color);
+      }
+    }
+    bindGradientControls() {
+      var _a;
+      this.$gradientColorButtons = Array.from(this.$dialog.querySelectorAll(".cp_gradient-color-preview"));
+      this.$angleInput = this.$dialog.querySelector(".cp_angle-input");
+      this.$gradientPreview = this.$dialog.querySelector(".cp_gradient-preview");
+      const $gradientPanel = this.$dialog.querySelector(".cp_panel-gradient");
+      if ($gradientPanel) {
+        const $hsvTrack = $gradientPanel.querySelector(".cp_area-hsv");
+        if ($hsvTrack) {
+          this.gradientHsvSlider = new Slider($hsvTrack);
+          this.gradientHsvSlider.on("drag", (x, y) => {
+            this._setNewColor(this._newColor.saturation(x).value(1 - y));
+          });
+        }
+        const $hueTrack = $gradientPanel.querySelector(".cp_slider-hue");
+        if ($hueTrack) {
+          this.gradientHueSlider = new Slider($hueTrack);
+          this.gradientHueSlider.on("drag", (x) => {
+            this._setNewColor(this._newColor.hue(x * 360));
+          });
+        }
+        const $alphaTrack = $gradientPanel.querySelector(".cp_slider-alpha");
+        if ($alphaTrack) {
+          if (this.config.enableAlpha) {
+            this.gradientAlphaSlider = new Slider($alphaTrack);
+            this.gradientAlphaSlider.on("drag", (x) => {
+              this._setNewColor(this._newColor.alpha(x), true);
+            });
+          } else {
+            $alphaTrack.remove();
+          }
+        }
+        const $angleTrack = $gradientPanel.querySelector(".cp_slider-angle");
+        if ($angleTrack) {
+          this.angleSlider = new Slider($angleTrack);
+          this.angleSlider.on("drag", (x) => {
+            this._gradientAngle = x * 360;
+            this.updateGradientAngle();
+          });
+        }
+      }
+      this.$gradientColorButtons.forEach(($button) => {
+        $button.addEventListener("click", () => {
+          this._activeGradientColor = $button.dataset.color;
+          this.updateGradientColorSelection();
+          this._setNewColor(this._activeGradientColor === "start" ? this._gradientStartColor : this._gradientEndColor);
+        });
+      });
+      (_a = this.$angleInput) == null ? void 0 : _a.addEventListener("input", () => {
+        var _a2;
+        const value = parseInt(this.$angleInput.value);
+        if (!isNaN(value) && value >= 0 && value <= 360) {
+          this._gradientAngle = value;
+          (_a2 = this.angleSlider) == null ? void 0 : _a2.move(value / 360);
+          this.updateGradientPreview();
+        }
+      });
+      this.updateGradientColorSelection();
+      this.updateGradientAngle();
+      this.updateGradientPreview();
+    }
+    updateGradientColorSelection() {
+      var _a;
+      (_a = this.$gradientColorButtons) == null ? void 0 : _a.forEach(($button) => {
+        $button.classList.toggle("active", $button.dataset.color === this._activeGradientColor);
+      });
+    }
+    updateGradientAngle() {
+      if (this.$angleInput) {
+        this.$angleInput.value = this._gradientAngle.toString();
+      }
+      if (this.angleSlider) {
+        this.angleSlider.move(this._gradientAngle / 360);
+      }
+      this.updateGradientPreview();
+    }
+    updateGradientPreview() {
+      var _a;
+      if (this.$gradientPreview) {
+        const startColor = this._gradientStartColor.string("hex");
+        const endColor = this._gradientEndColor.string("hex");
+        this.$gradientPreview.style.background = `linear-gradient(${this._gradientAngle}deg, ${startColor}, ${endColor})`;
+      }
+      (_a = this.$gradientColorButtons) == null ? void 0 : _a.forEach(($button) => {
+        const colorType = $button.dataset.color;
+        const color = colorType === "start" ? this._gradientStartColor : this._gradientEndColor;
+        $button.style.background = `linear-gradient(${color.string("hex")}, ${color.string("hex")}), var(--cp-bg-checker)`;
+      });
     }
     getAnimationDuration() {
       const computed = window.getComputedStyle(this.$toggle);
@@ -2248,7 +2407,38 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
      * @param emit Emit event?
      */
     submit(color = this._newColor, emit = true) {
-      this._setCurrentColor(color, emit, true);
+      if (this._gradientMode) {
+        const gradientData = {
+          type: "gradient",
+          startColor: this._gradientStartColor,
+          endColor: this._gradientEndColor,
+          angle: this._gradientAngle
+        };
+        this._unset = false;
+        this._hasGradient = true;
+        const gradientCSS = `linear-gradient(${this._gradientAngle}deg, ${this._gradientStartColor.string("hex")}, ${this._gradientEndColor.string("hex")})`;
+        const gradientString = `gradient(${this._gradientAngle}deg, ${this._gradientStartColor.string(this.config.defaultFormat)}, ${this._gradientEndColor.string(this.config.defaultFormat)})`;
+        if (this.$input) {
+          this.$input.value = gradientString;
+          this.$input.dataset.color = gradientCSS;
+        }
+        if (this.$toggle) this.$toggle.dataset.color = gradientCSS;
+        if (this.$button) {
+          this.$button.classList.remove("cp_unset");
+          this.$button.style.background = `${gradientCSS}, var(--cp-bg-checker)`;
+        }
+        if (emit) {
+          this.emit("pick", gradientData);
+          if (this.$input) {
+            this._firingChange = true;
+            this.$input.dispatchEvent(new Event("change"));
+            this._firingChange = false;
+          }
+        }
+      } else {
+        this._hasGradient = false;
+        this._setCurrentColor(color, emit, true);
+      }
       this.close(emit);
     }
     /**
@@ -2281,6 +2471,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
      */
     clear(emit = true) {
       this._unset = true;
+      this._hasGradient = false;
       this.updateAppliedColor(emit);
     }
     /**
@@ -2290,6 +2481,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
      */
     setColor(color, emit = true) {
       if (!color) return this.clear(emit);
+      this._hasGradient = false;
       this._setCurrentColor(new Color(color), emit);
     }
     /**
@@ -2307,10 +2499,20 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
     _setNewColor(color, updateInput = true) {
       this._newColor = color;
+      if (this._gradientMode) {
+        if (this._activeGradientColor === "start") {
+          this._gradientStartColor = color;
+        } else {
+          this._gradientEndColor = color;
+        }
+        this.updateGradientPreview();
+      }
       if (this.config.submitMode === "instant" || this.config.swatchesOnly) {
         this._unset = false;
-        this._color = color;
-        this.updateAppliedColor(true);
+        if (!this._gradientMode) {
+          this._color = color;
+          this.updateAppliedColor(true);
+        }
       }
       this.updateColor(updateInput);
     }
@@ -2321,7 +2523,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       this.updateAppliedColor(emit);
     }
     updateColor(updateInput = true) {
-      var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
+      var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m;
       const currentColor = ((_a = this.color) == null ? void 0 : _a.toString()) ?? "transparent";
       const newColorHex = this._newColor.string("hex");
       (_b = this.$dialog) == null ? void 0 : _b.style.setProperty("--cp-base-color", newColorHex.substring(0, 7));
@@ -2333,6 +2535,11 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       (_h = this.hsvSlider) == null ? void 0 : _h.move(this._newColor.saturation(), 1 - this._newColor.value());
       (_i = this.hueSlider) == null ? void 0 : _i.move(this._newColor.hue() / 360);
       (_j = this.alphaSlider) == null ? void 0 : _j.move(this._newColor.alpha());
+      if (this._gradientMode) {
+        (_k = this.gradientHsvSlider) == null ? void 0 : _k.move(this._newColor.saturation(), 1 - this._newColor.value());
+        (_l = this.gradientHueSlider) == null ? void 0 : _l.move(this._newColor.hue() / 360);
+        (_m = this.gradientAlphaSlider) == null ? void 0 : _m.move(this._newColor.alpha());
+      }
       if (updateInput && this.$colorInput) {
         this.$colorInput.value = this._newColor.string(this._format);
       }

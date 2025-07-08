@@ -19,6 +19,7 @@ An open source, free (as in beer), versatile, flexible and lightweight Javascrip
   - [Setting Color](#setting-color)
   - [Binding Events](#binding-events)
   - [Dialog Only](#dialog-only)
+  - [Gradient Support](#gradient-support)
 - [Documentation](#documentation)
 - [Customization](#customization)
   - [Color Scheme](#color-scheme)
@@ -44,6 +45,7 @@ An open source, free (as in beer), versatile, flexible and lightweight Javascrip
 - 💧 EyeDropper on Chrome and Edge
 - ⌨️ Keyboard support
 - 🚫 Clearable
+- 🎨 **Gradient Support** - Create linear gradients with angle control
 
 ## Live Demo
 
@@ -158,6 +160,98 @@ const picker = new ColorPicker(target, {
 })
 
 const color = await picker.prompt(true)
+```
+
+## Gradient Support
+
+The color picker now supports linear gradients with customizable angles. To enable gradient functionality, set the `allowGradientSelection` configuration option to `true`:
+
+```js
+const picker = new ColorPicker('#picker', {
+  allowGradientSelection: true
+})
+```
+
+### Gradient Configuration
+
+When gradient support is enabled, users can switch between "Solid Color" and "Gradient" modes in the picker interface. The gradient mode allows:
+
+- Start and end color selection
+- Angle control (0-360 degrees) with both slider and numeric input
+- Real-time preview of the gradient
+
+### Gradient Events
+
+The picker emits the same events for both solid colors and gradients. When a gradient is selected, the `pick` event receives a gradient data object:
+
+```js
+picker.on('pick', (data) => {
+  if (data && typeof data === 'object' && data.type === 'gradient') {
+    // Handle gradient data
+    console.log(`Gradient: ${data.angle}° from ${data.startColor.string('hex')} to ${data.endColor.string('hex')}`)
+    
+    // Access gradient properties
+    const startColor = data.startColor  // Color object
+    const endColor = data.endColor      // Color object  
+    const angle = data.angle            // Number (0-360)
+    
+    // Generate CSS gradient
+    const css = `linear-gradient(${angle}deg, ${startColor.string('hex')}, ${endColor.string('hex')})`
+  } else {
+    // Handle solid color (Color object or null)
+    console.log('Solid color:', data)
+  }
+})
+```
+
+### Gradient Data Format
+
+When a gradient is selected, the `pick` event receives an object with this structure:
+
+```js
+{
+  type: 'gradient',
+  startColor: Color,  // Color object for start color
+  endColor: Color,    // Color object for end color
+  angle: number       // Angle in degrees (0-360)
+}
+```
+
+The `startColor` and `endColor` are full Color objects with all the same methods as regular colors (`.string()`, `.hue()`, `.saturation()`, etc.).
+
+### Setting Gradient Programmatically
+
+Currently, the API focuses on solid color setting. Gradient state is managed through the UI interaction. The picker will remember the last gradient settings when reopened.
+
+### Gradient Persistence
+
+The picker automatically:
+- Remembers gradient state when the dialog is reopened
+- Persists gradient background on the picker button
+- Maintains gradient settings across dialog sessions
+
+### Example Usage
+
+```js
+const picker = new ColorPicker('#gradient-picker', {
+  allowGradientSelection: true,
+  submitMode: 'confirm',
+  defaultFormat: 'hex'
+})
+
+picker.on('pick', (data) => {
+  if (data && data.type === 'gradient') {
+    // Apply gradient to element
+    document.getElementById('target').style.background = 
+      `linear-gradient(${data.angle}deg, ${data.startColor.string('hex')}, ${data.endColor.string('hex')})`
+  } else if (data) {
+    // Apply solid color
+    document.getElementById('target').style.background = data.string('hex')
+  } else {
+    // Clear background
+    document.getElementById('target').style.background = 'transparent'
+  }
+})
 ```
 
 ## Documentation

@@ -119,6 +119,13 @@ export interface PickerConfig {
    * Default: 8
    */
   staticOffset: number
+
+  /**
+   * Whether to enable gradient selection mode alongside solid color selection.
+   * When enabled, users can choose between solid colors and linear gradients.
+   * Default: false
+   */
+  allowGradientSelection: boolean
 }
 
 export const defaultConfig: PickerConfig = {
@@ -140,4 +147,5 @@ export const defaultConfig: PickerConfig = {
   dialogOffset: 8,
   staticPlacement: 'center',
   staticOffset: 8,
+  allowGradientSelection: false,
 }
