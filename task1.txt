@@ -1,0 +1,15 @@
+JSColorPicker is a nice open source project for a color picker component. We have forked the project and now want
+to add a new feature that will allow the user to define a gradient. We want to add a new configuration property called
+allowGradientSelection and default it to false. But when allowGradientSelection is to true then when the color picker
+dialog opens we will have two 'tabs' or panels where the user can select 'Solid Color' or 'Gradient'. When the user is on
+the 'Solid Color' mode the component operates just like it does today.
+
+On the Gradient mode we will have some extra controls. Instead of selecting a single color there will be a way to choose
+between a start color and end color. The existing color picker controls will be used to set the start and end color. They can highlight
+those colors swatches to switch between the start and end color.
+
+The only other new UI would be an 'Angle' selection that appears on the gradient mode. It will have a slider and a number input that 
+allows the user to put in numbers from 0 to 360.
+
+We will want to create a demo/test for this in the dev/index.html page. Let's break this down into tasks and create a tasks.md file
+where we can check items off when they are completed. But we want to tackle this in small pieces so we can review and adjust.
