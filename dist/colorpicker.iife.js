@@ -1982,9 +1982,12 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       this.$toggle = $from;
       const color = this.config.color || $from.value || $from.dataset.color || void 0;
       if (!this.config.headless) this.createToggle($from);
-      this._setCurrentColor(new Color(color), false);
-      if (!color) this.clear(false);
-      if (this.config.gradient) {
+      this._gradientStartColor = new Color(color || "#ff0000");
+      this._gradientEndColor = new Color("#0000ff");
+      if (color) {
+        this._setCurrentColor(new Color(color), false);
+        this._hasGradient = false;
+      } else if (this.config.gradient) {
         this._gradientStartColor = new Color(this.config.gradient.startColor);
         this._gradientEndColor = new Color(this.config.gradient.endColor);
         this._gradientAngle = this.config.gradient.angle;
@@ -2002,8 +2005,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
           }
         }
       } else {
-        this._gradientStartColor = new Color(color || "#ff0000");
-        this._gradientEndColor = new Color("#0000ff");
+        this.clear(false);
       }
       this.setSwatches(this.config.swatches);
       this.on("pick", (data) => {
@@ -2017,14 +2019,18 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
           }
         }
       });
-      if (this.config.gradient && !this.config.headless) {
-        const gradientData = {
-          type: "gradient",
-          startColor: this._gradientStartColor,
-          endColor: this._gradientEndColor,
-          angle: this._gradientAngle
-        };
-        this.emit("pick", gradientData);
+      if (!this.config.headless) {
+        if (this._hasGradient) {
+          const gradientData = {
+            type: "gradient",
+            startColor: this._gradientStartColor,
+            endColor: this._gradientEndColor,
+            angle: this._gradientAngle
+          };
+          this.emit("pick", gradientData);
+        } else if (this.color) {
+          this.emit("pick", this.color);
+        }
       }
       if (this.config.dismissOnOutsideClick) {
         window.addEventListener("pointerdown", (event) => {

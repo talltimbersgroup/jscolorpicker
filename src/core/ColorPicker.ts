@@ -181,11 +181,17 @@ export class ColorPicker extends EventEmitter<{
 
     if (!this.config.headless) this.createToggle($from)
 
-    this._setCurrentColor(new Color(color), false)
-    if (!color) this.clear(false)
-
-    // Initialize gradient state from config or defaults
-    if (this.config.gradient) {
+    // Initialize gradient defaults first
+    this._gradientStartColor = new Color(color || '#ff0000')
+    this._gradientEndColor = new Color('#0000ff')
+    
+    // Determine which mode to use based on config priority
+    if (color) {
+      // Color takes precedence - use solid color mode
+      this._setCurrentColor(new Color(color), false)
+      this._hasGradient = false
+    } else if (this.config.gradient) {
+      // No color specified but gradient is - use gradient mode
       this._gradientStartColor = new Color(this.config.gradient.startColor)
       this._gradientEndColor = new Color(this.config.gradient.endColor)
       this._gradientAngle = this.config.gradient.angle
@@ -206,8 +212,8 @@ export class ColorPicker extends EventEmitter<{
         }
       }
     } else {
-      this._gradientStartColor = new Color(color || '#ff0000')
-      this._gradientEndColor = new Color('#0000ff')
+      // Neither color nor gradient specified - use default solid color
+      this.clear(false)
     }
 
     this.setSwatches(this.config.swatches)
@@ -227,16 +233,21 @@ export class ColorPicker extends EventEmitter<{
       }
     })
 
-    // Initialize button state for gradients
-    if (this.config.gradient && !this.config.headless) {
-      // Emit initial gradient pick event to update button
-      const gradientData: GradientData = {
-        type: 'gradient',
-        startColor: this._gradientStartColor,
-        endColor: this._gradientEndColor,
-        angle: this._gradientAngle
+    // Initialize button state based on current mode
+    if (!this.config.headless) {
+      if (this._hasGradient) {
+        // Emit initial gradient pick event to update button
+        const gradientData: GradientData = {
+          type: 'gradient',
+          startColor: this._gradientStartColor,
+          endColor: this._gradientEndColor,
+          angle: this._gradientAngle
+        }
+        this.emit('pick', gradientData as any)
+      } else if (this.color) {
+        // Emit initial solid color pick event to update button
+        this.emit('pick', this.color)
       }
-      this.emit('pick', gradientData as any)
     }
 
     // Dismissal events
