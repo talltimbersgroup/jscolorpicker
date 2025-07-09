@@ -1999,7 +1999,6 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
           if (this.$toggle) this.$toggle.dataset.color = gradientCSS;
           if (this.$button) {
             this.$button.classList.remove("cp_unset");
-            this.$button.style.background = `${gradientCSS}, var(--cp-bg-checker)`;
           }
         }
       } else {
@@ -2007,6 +2006,26 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         this._gradientEndColor = new Color("#0000ff");
       }
       this.setSwatches(this.config.swatches);
+      this.on("pick", (data) => {
+        if (this.$button) {
+          if (data && typeof data === "object" && "type" in data && data.type === "gradient" && "startColor" in data && "endColor" in data && "angle" in data) {
+            const gradientData = data;
+            const gradientCSS = `linear-gradient(${gradientData.angle}deg, ${gradientData.startColor.string("hex")}, ${gradientData.endColor.string("hex")})`;
+            this.$button.style.background = `${gradientCSS}, var(--cp-bg-checker)`;
+          } else {
+            this.$button.style.background = "";
+          }
+        }
+      });
+      if (this.config.gradient && !this.config.headless) {
+        const gradientData = {
+          type: "gradient",
+          startColor: this._gradientStartColor,
+          endColor: this._gradientEndColor,
+          angle: this._gradientAngle
+        };
+        this.emit("pick", gradientData);
+      }
       if (this.config.dismissOnOutsideClick) {
         window.addEventListener("pointerdown", (event) => {
           if (!this._open) return;
@@ -2466,7 +2485,6 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         if (this.$toggle) this.$toggle.dataset.color = gradientCSS;
         if (this.$button) {
           this.$button.classList.remove("cp_unset");
-          this.$button.style.background = `${gradientCSS}, var(--cp-bg-checker)`;
         }
         if (emit) {
           this.emit("pick", gradientData);
@@ -2545,7 +2563,6 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       if (this.$toggle) this.$toggle.dataset.color = gradientCSS;
       if (this.$button) {
         this.$button.classList.remove("cp_unset");
-        this.$button.style.background = `${gradientCSS}, var(--cp-bg-checker)`;
       }
       if (emit) {
         const gradientData = {
@@ -2631,7 +2648,9 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         this.$input.dataset.color = color;
       }
       if (this.$toggle) this.$toggle.dataset.color = color;
-      if (this.$button) this.$button.classList.toggle("cp_unset", this._unset);
+      if (this.$button) {
+        this.$button.classList.toggle("cp_unset", this._unset);
+      }
       if (emit) {
         this.emit("pick", this.color);
         if (this.$input) {

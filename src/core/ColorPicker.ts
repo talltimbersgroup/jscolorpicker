@@ -203,7 +203,6 @@ export class ColorPicker extends EventEmitter<{
         if (this.$toggle) this.$toggle.dataset.color = gradientCSS
         if (this.$button) {
           this.$button.classList.remove('cp_unset')
-          this.$button.style.background = `${gradientCSS}, var(--cp-bg-checker)`
         }
       }
     } else {
@@ -212,6 +211,33 @@ export class ColorPicker extends EventEmitter<{
     }
 
     this.setSwatches(this.config.swatches)
+
+    // Listen to our own pick events to update button background
+    this.on('pick', (data) => {
+      if (this.$button) {
+        if (data && typeof data === 'object' && 'type' in data && data.type === 'gradient' && 'startColor' in data && 'endColor' in data && 'angle' in data) {
+          // Update button with gradient background
+          const gradientData = data as unknown as GradientData
+          const gradientCSS = `linear-gradient(${gradientData.angle}deg, ${gradientData.startColor.string('hex')}, ${gradientData.endColor.string('hex')})`
+          this.$button.style.background = `${gradientCSS}, var(--cp-bg-checker)`
+        } else {
+          // Clear inline background for solid colors, let CSS handle it
+          this.$button.style.background = ''
+        }
+      }
+    })
+
+    // Initialize button state for gradients
+    if (this.config.gradient && !this.config.headless) {
+      // Emit initial gradient pick event to update button
+      const gradientData: GradientData = {
+        type: 'gradient',
+        startColor: this._gradientStartColor,
+        endColor: this._gradientEndColor,
+        angle: this._gradientAngle
+      }
+      this.emit('pick', gradientData as any)
+    }
 
     // Dismissal events
     if (this.config.dismissOnOutsideClick) {
@@ -679,8 +705,6 @@ export class ColorPicker extends EventEmitter<{
       if (this.$toggle) this.$toggle.dataset.color = gradientCSS
       if (this.$button) {
         this.$button.classList.remove('cp_unset')
-        // Force the gradient background to persist
-        this.$button.style.background = `${gradientCSS}, var(--cp-bg-checker)`
       }
       
       if (emit) {
@@ -775,7 +799,6 @@ export class ColorPicker extends EventEmitter<{
     if (this.$toggle) this.$toggle.dataset.color = gradientCSS
     if (this.$button) {
       this.$button.classList.remove('cp_unset')
-      this.$button.style.background = `${gradientCSS}, var(--cp-bg-checker)`
     }
 
     if (emit) {
@@ -880,7 +903,9 @@ export class ColorPicker extends EventEmitter<{
       this.$input.dataset.color = color
     }
     if (this.$toggle) this.$toggle.dataset.color = color
-    if (this.$button) this.$button.classList.toggle('cp_unset', this._unset)
+    if (this.$button) {
+      this.$button.classList.toggle('cp_unset', this._unset)
+    }
 
     if (emit) {
       this.emit('pick', this.color)
