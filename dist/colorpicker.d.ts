@@ -154,6 +154,12 @@ declare class ColorPicker extends EventEmitter<{
      */
     setColor(color: Color | number[] | string | null, emit?: boolean): void;
     /**
+     * Set the picker gradient value.
+     * @param gradient The gradient data to set.
+     * @param emit Emit event?
+     */
+    setGradient(gradient: GradientInput, emit?: boolean): void;
+    /**
      * Set the picker color format.
      * @param format The color format.
      * @param update Update colors?
@@ -167,6 +173,13 @@ declare class ColorPicker extends EventEmitter<{
     private updateSwatches;
 }
 export default ColorPicker;
+
+declare interface GradientInput {
+    type: 'gradient';
+    startColor: string | Color;
+    endColor: string | Color;
+    angle: number;
+}
 
 declare interface PickerConfig {
     /**
@@ -274,6 +287,12 @@ declare interface PickerConfig {
      * Default: false
      */
     allowGradientSelection: boolean;
+    /**
+     * Initial gradient state to load into the picker.
+     * When provided, the picker will start in gradient mode with these settings.
+     * Default: null
+     */
+    gradient: GradientInput | null;
 }
 
 declare type StaticPlacement = 'center' | 'top left' | 'top center' | 'top right' | 'center left' | 'center center' | 'center right' | 'bottom left' | 'bottom center' | 'bottom right';

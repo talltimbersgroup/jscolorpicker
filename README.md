@@ -221,7 +221,30 @@ The `startColor` and `endColor` are full Color objects with all the same methods
 
 ### Setting Gradient Programmatically
 
-Currently, the API focuses on solid color setting. Gradient state is managed through the UI interaction. The picker will remember the last gradient settings when reopened.
+You can programmatically set gradients using the `setGradient()` method or initialize with a gradient via the configuration:
+
+```js
+// Set gradient after creation
+picker.setGradient({
+  type: 'gradient',
+  startColor: 'red',
+  endColor: 'green',
+  angle: 90
+})
+
+// Or initialize with a gradient
+const picker = new ColorPicker('#picker', {
+  allowGradientSelection: true,
+  gradient: {
+    type: 'gradient',
+    startColor: '#ff6b6b',
+    endColor: '#4ecdc4',
+    angle: 45
+  }
+})
+```
+
+When a gradient is set programmatically, the picker will automatically display the gradient background and remember the gradient state when reopened.
 
 ### Gradient Persistence
 
@@ -250,6 +273,29 @@ picker.on('pick', (data) => {
   } else {
     // Clear background
     document.getElementById('target').style.background = 'transparent'
+  }
+})
+
+// Load saved gradient state
+const savedGradient = localStorage.getItem('userGradient')
+if (savedGradient) {
+  const gradientData = JSON.parse(savedGradient)
+  picker.setGradient({
+    type: 'gradient',
+    startColor: gradientData.startColor,
+    endColor: gradientData.endColor,
+    angle: gradientData.angle
+  })
+}
+
+// Save gradient state
+picker.on('pick', (data) => {
+  if (data && data.type === 'gradient') {
+    localStorage.setItem('userGradient', JSON.stringify({
+      startColor: data.startColor.string('hex'),
+      endColor: data.endColor.string('hex'),
+      angle: data.angle
+    }))
   }
 })
 ```

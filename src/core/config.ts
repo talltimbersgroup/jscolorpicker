@@ -1,5 +1,5 @@
 import type { Placement } from '@popperjs/core'
-import type { ColorFormat } from '../lib/Color'
+import type { ColorFormat, GradientInput } from '../lib/Color'
 import type { StaticPlacement } from '../lib/placement'
 
 export interface PickerConfig {
@@ -126,6 +126,13 @@ export interface PickerConfig {
    * Default: false
    */
   allowGradientSelection: boolean
+
+  /**
+   * Initial gradient state to load into the picker.
+   * When provided, the picker will start in gradient mode with these settings.
+   * Default: null
+   */
+  gradient: GradientInput | null
 }
 
 export const defaultConfig: PickerConfig = {
@@ -148,4 +155,5 @@ export const defaultConfig: PickerConfig = {
   staticPlacement: 'center',
   staticOffset: 8,
   allowGradientSelection: false,
+  gradient: null,
 }

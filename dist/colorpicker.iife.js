@@ -1909,7 +1909,8 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     dialogOffset: 8,
     staticPlacement: "center",
     staticOffset: 8,
-    allowGradientSelection: false
+    allowGradientSelection: false,
+    gradient: null
   };
   const getElement = (from) => {
     if (!from) return null;
@@ -1983,8 +1984,28 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       if (!this.config.headless) this.createToggle($from);
       this._setCurrentColor(new Color(color), false);
       if (!color) this.clear(false);
-      this._gradientStartColor = new Color(color || "#ff0000");
-      this._gradientEndColor = new Color("#0000ff");
+      if (this.config.gradient) {
+        this._gradientStartColor = new Color(this.config.gradient.startColor);
+        this._gradientEndColor = new Color(this.config.gradient.endColor);
+        this._gradientAngle = this.config.gradient.angle;
+        this._hasGradient = true;
+        if (!this.config.headless) {
+          const gradientCSS = `linear-gradient(${this._gradientAngle}deg, ${this._gradientStartColor.string("hex")}, ${this._gradientEndColor.string("hex")})`;
+          const gradientString = `gradient(${this._gradientAngle}deg, ${this._gradientStartColor.string(this.config.defaultFormat)}, ${this._gradientEndColor.string(this.config.defaultFormat)})`;
+          if (this.$input) {
+            this.$input.value = gradientString;
+            this.$input.dataset.color = gradientCSS;
+          }
+          if (this.$toggle) this.$toggle.dataset.color = gradientCSS;
+          if (this.$button) {
+            this.$button.classList.remove("cp_unset");
+            this.$button.style.background = `${gradientCSS}, var(--cp-bg-checker)`;
+          }
+        }
+      } else {
+        this._gradientStartColor = new Color(color || "#ff0000");
+        this._gradientEndColor = new Color("#0000ff");
+      }
       this.setSwatches(this.config.swatches);
       if (this.config.dismissOnOutsideClick) {
         window.addEventListener("pointerdown", (event) => {
@@ -2483,6 +2504,43 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       if (!color) return this.clear(emit);
       this._hasGradient = false;
       this._setCurrentColor(new Color(color), emit);
+    }
+    /**
+     * Set the picker gradient value.
+     * @param gradient The gradient data to set.
+     * @param emit Emit event?
+     */
+    setGradient(gradient, emit = true) {
+      this._gradientStartColor = new Color(gradient.startColor);
+      this._gradientEndColor = new Color(gradient.endColor);
+      this._gradientAngle = gradient.angle;
+      this._hasGradient = true;
+      this._unset = false;
+      const gradientCSS = `linear-gradient(${gradient.angle}deg, ${this._gradientStartColor.string("hex")}, ${this._gradientEndColor.string("hex")})`;
+      const gradientString = `gradient(${gradient.angle}deg, ${this._gradientStartColor.string(this.config.defaultFormat)}, ${this._gradientEndColor.string(this.config.defaultFormat)})`;
+      if (this.$input) {
+        this.$input.value = gradientString;
+        this.$input.dataset.color = gradientCSS;
+      }
+      if (this.$toggle) this.$toggle.dataset.color = gradientCSS;
+      if (this.$button) {
+        this.$button.classList.remove("cp_unset");
+        this.$button.style.background = `${gradientCSS}, var(--cp-bg-checker)`;
+      }
+      if (emit) {
+        const gradientData = {
+          type: "gradient",
+          startColor: this._gradientStartColor,
+          endColor: this._gradientEndColor,
+          angle: gradient.angle
+        };
+        this.emit("pick", gradientData);
+        if (this.$input) {
+          this._firingChange = true;
+          this.$input.dispatchEvent(new Event("change"));
+          this._firingChange = false;
+        }
+      }
     }
     /**
      * Set the picker color format.

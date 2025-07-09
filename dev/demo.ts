@@ -71,6 +71,12 @@ pickers.push(
     color: 'red',
     defaultFormat: 'hex', // 'hex' | 'rgb' | 'hsv' | 'hsl'
     swatches: ['#d95d5d', '#db8525', '#e8c43c', '#bed649', '#9ecbdb', '#6399a5', '#c771a1'],
+    gradient: {
+      type: 'gradient',
+      startColor: '#ff6b6b',
+      endColor: '#4ecdc4',
+      angle: 45
+    }
   })
 )
 
@@ -148,6 +154,18 @@ for (const btn of document.querySelectorAll<HTMLElement>('.swatchesBtn')) {
   btn.onclick = () => {
     const idx = +btn.dataset.picker!
     pickers[idx - 1].setSwatches(['red', 'green', 'blue'])
+  }
+}
+
+for (const btn of document.querySelectorAll<HTMLElement>('.setGradientBtn')) {
+  btn.onclick = () => {
+    const idx = +btn.dataset.picker!
+    pickers[idx - 1].setGradient({
+      type: 'gradient',
+      startColor: 'red',
+      endColor: 'green',
+      angle: 90
+    })
   }
 }
 

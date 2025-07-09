@@ -10,6 +10,13 @@ export interface GradientData {
   angle: number
 }
 
+export interface GradientInput {
+  type: 'gradient'
+  startColor: string | Color
+  endColor: string | Color
+  angle: number
+}
+
 export interface SolidData {
   type: 'solid'
   color: Color
