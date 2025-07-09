@@ -2379,6 +2379,26 @@ class ColorPicker extends eventsExports.EventEmitter {
       this.angleSlider.move(this._gradientAngle / 360);
     }
     this.updateGradientPreview();
+    if (this.config.submitMode === "instant" && this._gradientMode) {
+      this._emitGradientEvent();
+    }
+  }
+  _emitGradientEvent() {
+    this._hasGradient = true;
+    const gradientData = {
+      type: "gradient",
+      startColor: this._gradientStartColor,
+      endColor: this._gradientEndColor,
+      angle: this._gradientAngle
+    };
+    this.emit("pick", gradientData);
+    if (this.$input) {
+      this._firingChange = true;
+      const gradientString = `gradient(${this._gradientAngle}deg, ${this._gradientStartColor.string(this.config.defaultFormat)}, ${this._gradientEndColor.string(this.config.defaultFormat)})`;
+      this.$input.value = gradientString;
+      this.$input.dispatchEvent(new Event("change"));
+      this._firingChange = false;
+    }
   }
   updateGradientPreview() {
     var _a;
@@ -2565,7 +2585,9 @@ class ColorPicker extends eventsExports.EventEmitter {
     }
     if (this.config.submitMode === "instant" || this.config.swatchesOnly) {
       this._unset = false;
-      if (!this._gradientMode) {
+      if (this._gradientMode) {
+        this._emitGradientEvent();
+      } else {
         this._color = color;
         this.updateAppliedColor(true);
       }

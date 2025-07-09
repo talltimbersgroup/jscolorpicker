@@ -67,7 +67,7 @@ pickers.push(
 
   new ColorPicker('#picker6', {
     allowGradientSelection: true,
-    submitMode: 'confirm', // 'instant' | 'confirm'
+    submitMode: 'instant', // 'instant' | 'confirm'
     color: 'red',
     defaultFormat: 'hex', // 'hex' | 'rgb' | 'hsv' | 'hsl'
     swatches: ['#d95d5d', '#db8525', '#e8c43c', '#bed649', '#9ecbdb', '#6399a5', '#c771a1'],

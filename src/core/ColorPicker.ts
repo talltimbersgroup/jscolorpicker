@@ -577,6 +577,29 @@ export class ColorPicker extends EventEmitter<{
       this.angleSlider.move(this._gradientAngle / 360)
     }
     this.updateGradientPreview()
+    
+    // Emit gradient event in instant mode
+    if (this.config.submitMode === 'instant' && this._gradientMode) {
+      this._emitGradientEvent()
+    }
+  }
+
+  private _emitGradientEvent() {
+    this._hasGradient = true
+    const gradientData: GradientData = {
+      type: 'gradient',
+      startColor: this._gradientStartColor,
+      endColor: this._gradientEndColor,
+      angle: this._gradientAngle
+    }
+    this.emit('pick', gradientData as any)
+    if (this.$input) {
+      this._firingChange = true
+      const gradientString = `gradient(${this._gradientAngle}deg, ${this._gradientStartColor.string(this.config.defaultFormat)}, ${this._gradientEndColor.string(this.config.defaultFormat)})`
+      this.$input.value = gradientString
+      this.$input.dispatchEvent(new Event('change'))
+      this._firingChange = false
+    }
   }
 
   private updateGradientPreview() {
@@ -800,7 +823,10 @@ export class ColorPicker extends EventEmitter<{
 
     if (this.config.submitMode === 'instant' || this.config.swatchesOnly) {
       this._unset = false
-      if (!this._gradientMode) {
+      if (this._gradientMode) {
+        // Emit gradient data in instant mode
+        this._emitGradientEvent()
+      } else {
         this._color = color
         this.updateAppliedColor(true)
       }

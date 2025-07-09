@@ -125,6 +125,7 @@ declare class ColorPicker extends EventEmitter<{
     private bindGradientControls;
     private updateGradientColorSelection;
     private updateGradientAngle;
+    private _emitGradientEvent;
     private updateGradientPreview;
     private getAnimationDuration;
     /**
