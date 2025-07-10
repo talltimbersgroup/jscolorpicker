@@ -2598,6 +2598,22 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         this.updateAppliedColor(false);
       }
     }
+    /**
+     * Show the color picker toggle/button.
+     */
+    show() {
+      if (this.$toggle) {
+        this.$toggle.style.display = "";
+      }
+    }
+    /**
+     * Hide the color picker toggle/button.
+     */
+    hide() {
+      if (this.$toggle) {
+        this.$toggle.style.display = "none";
+      }
+    }
     _setNewColor(color, updateInput = true) {
       this._newColor = color;
       if (this._gradientMode) {

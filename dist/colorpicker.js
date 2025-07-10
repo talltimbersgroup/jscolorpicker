@@ -2596,6 +2596,22 @@ class ColorPicker extends eventsExports.EventEmitter {
       this.updateAppliedColor(false);
     }
   }
+  /**
+   * Show the color picker toggle/button.
+   */
+  show() {
+    if (this.$toggle) {
+      this.$toggle.style.display = "";
+    }
+  }
+  /**
+   * Hide the color picker toggle/button.
+   */
+  hide() {
+    if (this.$toggle) {
+      this.$toggle.style.display = "none";
+    }
+  }
   _setNewColor(color, updateInput = true) {
     this._newColor = color;
     if (this._gradientMode) {

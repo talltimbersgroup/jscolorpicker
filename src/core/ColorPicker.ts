@@ -843,6 +843,24 @@ export class ColorPicker extends EventEmitter<{
     }
   }
 
+  /**
+   * Show the color picker toggle/button.
+   */
+  show() {
+    if (this.$toggle) {
+      this.$toggle.style.display = ''
+    }
+  }
+
+  /**
+   * Hide the color picker toggle/button.
+   */
+  hide() {
+    if (this.$toggle) {
+      this.$toggle.style.display = 'none'
+    }
+  }
+
   private _setNewColor(color: Color, updateInput = true) {
     this._newColor = color
 

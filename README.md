@@ -123,6 +123,15 @@ picker.toggle()
 picker.destroy()
 ```
 
+### Show/Hide Toggle
+
+You can show or hide the color picker toggle/button:
+
+```js
+picker.show()  // Show the picker button
+picker.hide()  // Hide the picker button
+```
+
 You can also open it as a prompt, returning a promise once the picker is closed:
 
 ```js

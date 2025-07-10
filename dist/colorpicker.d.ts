@@ -166,6 +166,14 @@ declare class ColorPicker extends EventEmitter<{
      * @param update Update colors?
      */
     setFormat(format: ColorFormat, update?: boolean): void;
+    /**
+     * Show the color picker toggle/button.
+     */
+    show(): void;
+    /**
+     * Hide the color picker toggle/button.
+     */
+    hide(): void;
     private _setNewColor;
     private _setCurrentColor;
     private updateColor;

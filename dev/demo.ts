@@ -169,6 +169,20 @@ for (const btn of document.querySelectorAll<HTMLElement>('.setGradientBtn')) {
   }
 }
 
+for (const btn of document.querySelectorAll<HTMLElement>('.showBtn')) {
+  btn.onclick = () => {
+    const idx = +btn.dataset.picker!
+    pickers[idx - 1].show()
+  }
+}
+
+for (const btn of document.querySelectorAll<HTMLElement>('.hideBtn')) {
+  btn.onclick = () => {
+    const idx = +btn.dataset.picker!
+    pickers[idx - 1].hide()
+  }
+}
+
 document.querySelector('#setValueBtn')!.addEventListener('click', () => {
   const picker = document.querySelector('#picker1') as HTMLInputElement
   picker.value = 'yellow'
